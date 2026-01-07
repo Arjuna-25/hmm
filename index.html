@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stack Applications in C</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    header {
+      background: #1e293b;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1e293b;
+      margin-top: 30px;
+    }
+    pre {
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 15px;
+      overflow-x: auto;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+      color: #555;
+    }
+    .note {
+      background: #e0f2fe;
+      border-left: 5px solid #0284c7;
+      padding: 12px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Stack Applications in C</h1>
+  <p>Postfix Expression Evaluation & Tower of Hanoi</p>
+</header>
+
+<main>
+  <h2>Problem Statement</h2>
+  <p>
+    Design, Develop and Implement a Program in C for the following Stack Applications:
+  </p>
+  <ul>
+    <li>Evaluation of Suffix (Postfix) expression with single digit operands and operators: +, -, *, /, %, ^</li>
+    <li>Solving Tower of Hanoi problem with <em>n</em> disks</li>
+  </ul>
+
+  <h2>C Program</h2>
+  <pre><code>#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+
+#define MAX 100
+
+// ---------------- Stack for Postfix Evaluation ----------------
+typedef struct {
+    int arr[MAX];
+    int top;
+} Stack;
+
+void initStack(Stack *s) {
+    s->top = -1;
+}
+
+int isEmpty(Stack *s) {
+    return (s->top == -1);
+}
+
+int isFull(Stack *s) {
+    return (s->top == MAX - 1);
+}
+
+void push(Stack *s, int val) {
+    if (isFull(s)) {
+        printf("Stack Overflow!\n");
+        return;
+    }
+    s->arr[++s->top] = val;
+}
+
+int pop(Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack Underflow!\n");
+        return -1;
+    }
+    return s->arr[s->top--];
+}
+
+// Function to evaluate postfix expression
+int evaluatePostfix(char exp[]) {
+    Stack s;
+    initStack(&s);
+
+    for (int i = 0; exp[i] != '\0'; i++) {
+        char ch = exp[i];
+
+        if (isdigit(ch)) {
+            push(&s, ch - '0');
+        } else {
+            int val2 = pop(&s);
+            int val1 = pop(&s);
+            switch (ch) {
+                case '+': push(&s, val1 + val2); break;
+                case '-': push(&s, val1 - val2); break;
+                case '*': push(&s, val1 * val2); break;
+                case '/': push(&s, val1 / val2); break;
+                case '%': push(&s, val1 % val2); break;
+                case '^': push(&s, (int)pow(val1, val2)); break;
+                default:
+                    printf("Invalid Operator %c\n", ch);
+                    exit(1);
+            }
+        }
+    }
+    return pop(&s);
+}
+
+// ---------------- Tower of Hanoi ----------------
+void towerOfHanoi(int n, char src, char aux, char dest) {
+    if (n == 1) {
+        printf("Move disk 1 from %c to %c\n", src, dest);
+        return;
+    }
+    towerOfHanoi(n - 1, src, dest, aux);
+    printf("Move disk %d from %c to %c\n", n, src, dest);
+    towerOfHanoi(n - 1, aux, src, dest);
+}
+
+// ---------------- Main Program ----------------
+int main() {
+    int choice, n;
+    char exp[MAX];
+
+    while (1) {
+        printf("\n--- Stack Applications Menu ---\n");
+        printf("1. Evaluate Postfix Expression\n");
+        printf("2. Tower of Hanoi\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter postfix expression: ");
+                scanf("%s", exp);
+                printf("Result = %d\n", evaluatePostfix(exp));
+                break;
+
+            case 2:
+                printf("Enter number of disks: ");
+                scanf("%d", &n);
+                printf("The sequence of moves:\n");
+                towerOfHanoi(n, 'A', 'B', 'C');
+                break;
+
+            case 3:
+                exit(0);
+
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+  <div class="note">
+    <strong>Tip:</strong> You can convert this webpage into a PDF using your browser:
+    <br />File → Print → Save as PDF.
+  </div>
+</main>
+
+<footer>
+  <p>Created by Arjun | Hosted using GitHub Pages</p>
+</footer>
+
+</body>
+</html>
